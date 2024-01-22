@@ -1,0 +1,113 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+class Book {
+public:
+    string title;
+    string author;
+    string isbn;
+    bool available;
+
+    Book(const string& title, const string& author, const string& isbn)
+        : title(title), author(author), isbn(isbn), available(true) {}
+};
+
+class Library {
+private:
+    vector<Book> books;
+
+public:
+    void addBook(const Book& book) {
+        books.push_back(book);
+    }
+
+    void displayBook(const Book& book) const {
+        cout << "Title: " << book.title << "\nAuthor: " << book.author
+             << "\nISBN: " << book.isbn << "\nAvailability: " << (book.available ? "Available" : "Checked Out")
+             << "\n------------------------\n";
+    }
+
+    void searchBooks(const string& keyword) const {
+        for (const auto& book : books) {
+            if (book.title.find(keyword) != string::npos ||
+                book.author.find(keyword) != string::npos ||
+                book.isbn.find(keyword) != string::npos) {
+                displayBook(book);
+            }
+        }
+    }
+
+    void checkoutBook(int index) {
+        if (index >= 0 && index < books.size() && books[index].available) {
+            books[index].available = false;
+            cout << "Book checked out successfully.\n";
+        } else {
+            cout << "Invalid book index or book is not available.\n";
+        }
+    }
+
+    void returnBook(int index) {
+        if (index >= 0 && index < books.size() && !books[index].available) {
+            books[index].available = true;
+            cout << "Book returned successfully.\n";
+        } else {
+            cout << "Invalid book index or book is already available.\n";
+        }
+    }
+};
+
+int main() {
+    Library library;
+
+    // Adding sample books to the library
+    library.addBook(Book("The Catcher in the Rye", "J.D. Salinger", "978-0-316-76948-0"));
+    library.addBook(Book("To Kill a Mockingbird", "Harper Lee", "978-0-06-112008-4"));
+    library.addBook(Book("1984", "George Orwell", "978-0-452-28423-4"));
+2
+    while (true) {
+        cout << "\nLibrary Management System\n";
+        cout << "1. Search Books\n";
+        cout << "2. Checkout Book\n";
+        cout << "3. Return Book\n";
+        cout << "4. Exit\n";
+
+        int choice;
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: {
+                string keyword;
+                cout << "Enter title, author, or ISBN: ";
+                cin.ignore();  // Clear input buffer
+                getline(cin, keyword);
+
+                library.searchBooks(keyword);
+                break;
+            }
+            case 2: {
+                int checkoutIndex;
+                cout << "Enter the index of the book to checkout: ";
+                cin >> checkoutIndex;
+                library.checkoutBook(checkoutIndex);
+                break;
+            }
+            case 3: {
+                int returnIndex;
+                cout << "Enter the index of the book to return: ";
+                cin >> returnIndex;
+                library.returnBook(returnIndex);
+                break;
+            }
+            case 4:
+                cout << "Exiting the Library Management System.\n";
+                return 0;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    }
+
+    return 0;
+}
